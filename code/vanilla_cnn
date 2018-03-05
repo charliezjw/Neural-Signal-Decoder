@@ -1,0 +1,10 @@
+import numpy as np
+import tensorflow as tf
+import h5py
+
+A01T = h5py.File("../project_datasets/A01T_slice.mat", 'r')
+X = np.copy(A01T["image"])
+y = np.copy(A01T["type"])
+y = y[0, 0:X.shape[0]:1]
+y = np.asarray(y, dtype=np.int32)
+
