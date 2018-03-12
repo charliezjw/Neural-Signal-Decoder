@@ -20,15 +20,15 @@ for i in range(len(y)):
         y[i] = 3
     else:
         y[i] = 0
-X = X.reshape(-1, 25*1000)
+X = X.reshape(-1, 22*1000)
 y = y[~np.isnan(X).any(axis=1)]
 X = X[~np.isnan(X).any(axis=1)]
 X = X.reshape(-1, 22, 1000)
 
-x_in = tf.placeholder(tf.float32, [None, 25, 1000], name="input_x")
+x_in = tf.placeholder(tf.float32, [None, 22, 1000], name="input_x")
 y_real = tf.placeholder(tf.int32, [None], name="real_y")
 y_temp = tf.one_hot(y_real, 4)
-input_layer = tf.reshape(x_in, [-1, 25, 1000, 1], name="reshaped_x")
+input_layer = tf.reshape(x_in, [-1, 22, 1000, 1], name="reshaped_x")
 
 conv1 = tf.layers.conv2d(
     inputs=input_layer,
@@ -46,12 +46,12 @@ conv2 = tf.layers.conv2d(
     activation=tf.nn.relu)
 pool2 = tf.layers.max_pooling2d(inputs=conv2, pool_size=[2, 2], strides=2)
 
-pool2_flat = tf.reshape(pool2, [-1, (24*1000*64)//16])
+pool2_flat = tf.reshape(pool2, [-1, (5*250*64)])
 aff3 = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
 
 logits = tf.layers.dense(inputs=aff3, units=4)
 
-loss = tf.losses.softmax_cross_entropy(onehot_labels=y_temp, logits=logits)
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_temp, logits=logits))
 optimizer = tf.train.AdamOptimizer().minimize(loss)
 
 init = tf.global_variables_initializer()

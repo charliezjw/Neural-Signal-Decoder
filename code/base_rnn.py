@@ -43,7 +43,7 @@ outputs, states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
 
 logits = tf.layers.dense(inputs=outputs[-1], units=4)
 
-loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_temp, logits=logits)
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_temp, logits=logits))
 optimizer = tf.train.AdamOptimizer().minimize(loss)
 
 init = tf.global_variables_initializer()
