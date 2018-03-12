@@ -7,8 +7,7 @@ X = np.copy(A01T["image"])
 y = np.copy(A01T["type"])
 y = y[0, 0:X.shape[0]:1]
 y = np.asarray(y, dtype=np.int32)
-
-# np.savetxt('test.txt', X, fmt='%5s', delimiter=',')
+X = X[:, :22, :]
 
 for i in range(len(y)):
     if y[i] == 769:
@@ -24,7 +23,7 @@ for i in range(len(y)):
 X = X.reshape(-1, 25*1000)
 y = y[~np.isnan(X).any(axis=1)]
 X = X[~np.isnan(X).any(axis=1)]
-X = np.copy(X.reshape(-1, 25, 1000))
+X = X.reshape(-1, 22, 1000)
 
 x_in = tf.placeholder(tf.float32, [None, 25, 1000], name="input_x")
 y_real = tf.placeholder(tf.int32, [None], name="real_y")
