@@ -122,10 +122,23 @@ def crop_data(X_test, y_test, X_train, y_train):
     X_train_out = X_train[:, :, :500]
     y_train_out = y_train
 
-    for i in range(1, 501, 50):
+    for i in range(1, 501, 25):
         X_test_out = np.concatenate((X_test_out, X_test[:, :, i:i+500]), axis=0)
         # y_test_out = np.concatenate((y_test_out, y_test))
         X_train_out = np.concatenate((X_train_out, X_train[:, :, i:i+500]), axis=0)
         y_train_out = np.concatenate((y_train_out, y_train))
     print(X_test.shape)
+    return X_test_out, y_test_out, X_train_out, y_train_out
+
+
+def noise_data(X_test, y_test, X_train, y_train):
+    X_test_out = X_test
+    y_test_out = y_test
+    X_train_out = X_train
+    y_train_out = y_train
+
+    for _ in range(4):
+        X_train_out = np.concatenate((X_train_out, np.random.normal(size=X_train.shape) + X_train), axis=0)
+        y_train_out = np.concatenate((y_train_out, y_train))
+
     return X_test_out, y_test_out, X_train_out, y_train_out
