@@ -36,7 +36,7 @@ def get_data():
     X_train = X[train_mask]
     y_train = y[train_mask]
 
-    return X_test, y_test, X_train, y_train;
+    return X_test, y_test, X_train, y_train
 
 
 def get_all_data():
@@ -109,5 +109,23 @@ def get_all_data():
         X_train = np.concatenate((X_train, X[train_mask]), axis=0)
         y_train = np.concatenate((y_train, y[train_mask]), axis=0)
 
-    return X_test, y_test, X_train, y_train;
+    return X_test, y_test, X_train, y_train
 
+
+def crop_data(X_test, y_test, X_train, y_train):
+    X_test_out = []
+    y_test_out = []
+    X_train_out = []
+    y_train_out = []
+    X_test_out = X_test[:, :, :500]
+    y_test_out = y_test
+    X_train_out = X_train[:, :, :500]
+    y_train_out = y_train
+
+    for i in range(1, 501, 50):
+        X_test_out = np.concatenate((X_test_out, X_test[:, :, i:i+500]), axis=0)
+        # y_test_out = np.concatenate((y_test_out, y_test))
+        X_train_out = np.concatenate((X_train_out, X_train[:, :, i:i+500]), axis=0)
+        y_train_out = np.concatenate((y_train_out, y_train))
+    print(X_test.shape)
+    return X_test_out, y_test_out, X_train_out, y_train_out

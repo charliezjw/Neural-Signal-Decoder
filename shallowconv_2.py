@@ -1,8 +1,8 @@
 import numpy as np
 import tensorflow as tf
-from pre_processing import get_data
+from pre_processing import *
 
-X_test, y_test, X_train, y_train = get_data()
+X_test, y_test, X_train, y_train = get_all_data()
 
 x_in = tf.placeholder(tf.float32, [None, 22, 1000], name="input_x")
 y_real = tf.placeholder(tf.int32, [None], name="real_y")
@@ -54,26 +54,25 @@ train_loss_sum = tf.summary.scalar("train_loss", loss)
 optimizer = tf.train.AdamOptimizer().minimize(loss)
 
 
-writer = tf.summary.FileWriter("./shallowconv_2/7")
+writer = tf.summary.FileWriter("./shallowconv_2/8")
 init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
     sess.run(tf.local_variables_initializer())
     writer.add_graph(sess.graph)
 
-    for k in range(100):
+    for k in range(300):
         t_size = np.array(range(X_train.shape[0]))
         np.random.shuffle(t_size)
         test_mask = t_size[:50]
-        for i in range(3):
-            inputs = {x_in: X_train[test_mask], y_real: y_train[test_mask], train_mode: True}
-            cost, _, summ_1, summ_2 = sess.run([loss, optimizer, train_accu_summ, train_loss_sum], feed_dict=inputs)
-            writer.add_summary(summ_1, i + k*5)
-            writer.add_summary(summ_2, i + k*5)
+        inputs = {x_in: X_train[test_mask], y_real: y_train[test_mask], train_mode: True}
+        cost, _, summ_1, summ_2 = sess.run([loss, optimizer, train_accu_summ, train_loss_sum], feed_dict=inputs)
+        writer.add_summary(summ_1, k)
+        writer.add_summary(summ_2, k)
 
-            print("k is:", k)
-            inputs = {x_in: X_test, y_real: y_test, train_mode: False}
-            accu, cost, summ_1, summ_2 = sess.run([my_acc, loss, test_accu_summ, test_loss_sum], feed_dict=inputs)
-            print("test accuracy is:", accu)
-            writer.add_summary(summ_1, i + k*5)
-            writer.add_summary(summ_2, i + k*5)
+        print("k is:", k)
+        inputs = {x_in: X_test, y_real: y_test, train_mode: False}
+        accu, cost, summ_3, summ_4 = sess.run([my_acc, loss, test_accu_summ, test_loss_sum], feed_dict=inputs)
+        print("test accuracy is:", accu)
+        writer.add_summary(summ_3, k)
+        writer.add_summary(summ_4, k)
